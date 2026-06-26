@@ -87,12 +87,10 @@ struct DeckButton: Codable, Identifiable, Hashable, Sendable {
 /// The full deck definition that the Mac sends to connected clients.
 struct DeckLayout: Codable, Hashable, Sendable {
     var deckName: String
-    var columns: Int
     var buttons: [DeckButton]
 
-    init(deckName: String = "ControlDock", columns: Int = 3, buttons: [DeckButton] = []) {
+    init(deckName: String = "ControlDock", buttons: [DeckButton] = []) {
         self.deckName = deckName
-        self.columns = columns
         self.buttons = buttons
     }
 }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ServerListView: View {
     @Environment(DeckClient.self) private var client
+    @State private var showHelp = false
 
     var body: some View {
         VStack(spacing: 28) {
@@ -51,6 +52,15 @@ struct ServerListView: View {
 
             Spacer(minLength: 0)
         }
+        .overlay(alignment: .topTrailing) {
+            Button { showHelp = true } label: {
+                Image(systemName: "questionmark.circle.fill")
+                    .font(.title2)
+                    .foregroundStyle(.white.opacity(0.5))
+            }
+            .padding(20)
+        }
+        .sheet(isPresented: $showHelp) { HelpView() }
     }
 }
 

@@ -10,6 +10,16 @@
 		52C415CD2FED13F20001E898 /* ControlDock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ControlDock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		52C415E02FED13F30001E898 /* Exceptions for "ControlDock" folder in "ControlDock" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 52C415CC2FED13F20001E898 /* ControlDock */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		52C415CF2FED13F20001E898 /* ControlDock */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -20,16 +30,6 @@
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		52C415E02FED13F30001E898 /* Exceptions for "ControlDock" folder in "ControlDock" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 52C415CC2FED13F20001E898 /* ControlDock */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		52C415CA2FED13F20001E898 /* Frameworks */ = {

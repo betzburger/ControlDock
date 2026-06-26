@@ -26,14 +26,7 @@ struct EditorPane: View {
 struct ButtonEditorView: View {
     @Environment(AppModel.self) private var model
     @Binding var button: DeckButton
-
-    private let suggestedSymbols = [
-        "bolt.fill", "play.fill", "pause.fill", "speaker.wave.2.fill", "moon.fill",
-        "sun.max.fill", "lock.fill", "camera.fill", "mic.fill", "video.fill",
-        "folder.fill", "terminal.fill", "safari.fill", "envelope.fill", "music.note",
-        "house.fill", "power", "command", "arrow.clockwise", "gearshape.fill",
-        "star.fill", "heart.fill", "flame.fill", "bell.fill"
-    ]
+    @State private var showSymbolPicker = false
 
     var body: some View {
         ScrollView {
@@ -46,26 +39,20 @@ struct ButtonEditorView: View {
                 }
 
                 section("Symbol") {
-                    HStack {
+                    HStack(spacing: 10) {
+                        Image(systemName: button.symbol.isEmpty ? "questionmark" : button.symbol)
+                            .font(.system(size: 20))
+                            .frame(width: 34, height: 34)
+                            .background(MacTheme.accent.opacity(0.15), in: RoundedRectangle(cornerRadius: 8))
                         TextField("SF Symbol", text: $button.symbol)
                             .textFieldStyle(.roundedBorder)
-                        Image(systemName: button.symbol.isEmpty ? "questionmark" : button.symbol)
-                            .frame(width: 24)
-                    }
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach(suggestedSymbols, id: \.self) { name in
-                                Button {
-                                    button.symbol = name
-                                } label: {
-                                    Image(systemName: name)
-                                        .font(.system(size: 16))
-                                        .frame(width: 32, height: 32)
-                                        .background(button.symbol == name ? MacTheme.accent.opacity(0.25) : Color(nsColor: .controlBackgroundColor),
-                                                    in: RoundedRectangle(cornerRadius: 7))
-                                }
-                                .buttonStyle(.plain)
-                            }
+                        Button {
+                            showSymbolPicker = true
+                        } label: {
+                            Label("Auswählen …", systemImage: "square.grid.2x2")
+                        }
+                        .popover(isPresented: $showSymbolPicker, arrowEdge: .bottom) {
+                            SymbolPickerView(selection: $button.symbol)
                         }
                     }
                 }

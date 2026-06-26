@@ -29,6 +29,7 @@ struct ConfigView: View {
 
 private struct StatusSidebar: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         @Bindable var model = model
@@ -112,6 +113,13 @@ private struct StatusSidebar: View {
                 Text("ControlDock").font(.headline)
                 Text("Mac-Steuerzentrale").font(.caption).foregroundStyle(.secondary)
             }
+            Spacer()
+            Button { openWindow(id: "help") } label: {
+                Image(systemName: "questionmark.circle")
+                    .font(.title3)
+            }
+            .buttonStyle(.borderless)
+            .help("ControlDock-Hilfe öffnen")
         }
     }
 }
@@ -129,9 +137,6 @@ private struct ButtonListPane: View {
                     .textFieldStyle(.plain)
                     .font(.title3.bold())
                 Spacer()
-                Stepper("Spalten: \(model.columns)", value: $model.columns, in: 2...5)
-                    .font(.caption)
-                    .fixedSize()
             }
             .padding(.horizontal, 16).padding(.vertical, 12)
             Divider()

@@ -19,5 +19,25 @@ struct ControlDockMacApp: App {
                 .frame(minWidth: 880, minHeight: 560)
         }
         .windowResizability(.contentMinSize)
+        .commands {
+            CommandGroup(replacing: .help) {
+                HelpMenuCommand()
+            }
+        }
+
+        Window("ControlDock-Hilfe", id: "help") {
+            HelpView()
+        }
+        .defaultLaunchBehavior(.suppressed)
+        .windowResizability(.contentMinSize)
+    }
+}
+
+/// Opens the dedicated help window from the Help menu (⌘?).
+struct HelpMenuCommand: View {
+    @Environment(\.openWindow) private var openWindow
+    var body: some View {
+        Button("ControlDock-Hilfe") { openWindow(id: "help") }
+            .keyboardShortcut("?", modifiers: [.command])
     }
 }

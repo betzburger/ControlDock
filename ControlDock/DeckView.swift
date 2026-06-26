@@ -10,6 +10,7 @@ import SwiftUI
 struct DeckView: View {
     @Environment(DeckClient.self) private var client
     @State private var pressedID: UUID?
+    @State private var showHelp = false
 
     private var layout: DeckLayout { client.layout ?? DeckLayout() }
 
@@ -21,6 +22,7 @@ struct DeckView: View {
             }
         }
         .overlay(alignment: .bottom) { feedbackToast }
+        .sheet(isPresented: $showHelp) { HelpView() }
     }
 
     // MARK: Header
@@ -39,14 +41,25 @@ struct DeckView: View {
                 }
             }
             Spacer()
-            Button {
-                client.disconnect()
-            } label: {
-                Image(systemName: "xmark")
-                    .font(.headline)
-                    .foregroundStyle(.white.opacity(0.7))
-                    .frame(width: 40, height: 40)
-                    .background(DeckTheme.panel, in: Circle())
+            HStack(spacing: 10) {
+                Button {
+                    showHelp = true
+                } label: {
+                    Image(systemName: "questionmark")
+                        .font(.headline)
+                        .foregroundStyle(.white.opacity(0.7))
+                        .frame(width: 40, height: 40)
+                        .background(DeckTheme.panel, in: Circle())
+                }
+                Button {
+                    client.disconnect()
+                } label: {
+                    Image(systemName: "xmark")
+                        .font(.headline)
+                        .foregroundStyle(.white.opacity(0.7))
+                        .frame(width: 40, height: 40)
+                        .background(DeckTheme.panel, in: Circle())
+                }
             }
         }
         .padding(.horizontal, 20)

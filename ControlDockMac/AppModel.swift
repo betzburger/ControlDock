@@ -14,7 +14,6 @@ import SwiftUI
 /// Codable snapshot persisted to UserDefaults.
 private struct PersistedConfig: Codable {
     var deckName: String
-    var columns: Int
     var buttons: [DeckButton]
     var requirePIN: Bool
     var pin: String
@@ -26,7 +25,6 @@ final class AppModel {
 
     // Deck configuration
     var deckName: String { didSet { sync() } }
-    var columns: Int { didSet { sync() } }
     var buttons: [DeckButton] { didSet { sync() } }
 
     // Pairing
@@ -54,13 +52,11 @@ final class AppModel {
         if let data = defaults.data(forKey: storageKey),
            let config = try? JSONDecoder().decode(PersistedConfig.self, from: data) {
             deckName = config.deckName
-            columns = config.columns
             buttons = config.buttons
             requirePIN = config.requirePIN
             pin = config.pin
         } else {
             deckName = "Mein Deck"
-            columns = 3
             buttons = AppModel.starterButtons
             requirePIN = true
             pin = String(format: "%04d", Int.random(in: 0...9999))
@@ -70,7 +66,7 @@ final class AppModel {
     }
 
     private var layout: DeckLayout {
-        DeckLayout(deckName: deckName, columns: columns, buttons: buttons)
+        DeckLayout(deckName: deckName, buttons: buttons)
     }
 
     // MARK: - Server
@@ -100,7 +96,7 @@ final class AppModel {
     }
 
     private func persist() {
-        let config = PersistedConfig(deckName: deckName, columns: columns,
+        let config = PersistedConfig(deckName: deckName,
                                      buttons: buttons, requirePIN: requirePIN, pin: pin)
         if let data = try? JSONEncoder().encode(config) {
             defaults.set(data, forKey: storageKey)
