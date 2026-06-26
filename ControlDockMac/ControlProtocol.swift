@@ -51,7 +51,7 @@ nonisolated enum ActionType: String, Codable, CaseIterable, Hashable, Sendable {
         switch self {
         case .launchApp:   return "App-Name, Bundle-ID oder Pfad (z. B. Safari)"
         case .shellScript: return "Shell-Befehl (z. B. say \"Hallo\")"
-        case .keystroke:   return "Tastenkombination (z. B. cmd+shift+4)"
+        case .keystroke:   return "Tastenkombo (cmd+shift+4) oder Medientaste (volumeup, brightnessdown, play)"
         case .openURL:     return "URL (z. B. https://apple.com)"
         }
     }

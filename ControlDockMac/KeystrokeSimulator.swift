@@ -3,12 +3,15 @@
 //  ControlDockMac
 //
 //  Parses key combinations like "cmd+shift+4" and posts them as system-wide
-//  keyboard events via CoreGraphics. Requires Accessibility permission.
+//  keyboard events via CoreGraphics. Also supports the special media/hardware
+//  keys above the function row (volume, brightness, playback, keyboard light)
+//  via NX system-defined events. Requires Accessibility permission.
 //
 
 import Foundation
 import CoreGraphics
 import ApplicationServices
+import AppKit
 
 enum KeystrokeSimulator {
 
@@ -34,15 +37,23 @@ enum KeystrokeSimulator {
 
         var flags: CGEventFlags = []
         var keyCode: CGKeyCode?
+        var mediaKey: Int32?
 
         for token in tokens {
             if let modifier = modifiers[token] {
                 flags.insert(modifier)
+            } else if let media = mediaKeys[token] {
+                mediaKey = media
             } else if let code = keyCodes[token] {
                 keyCode = code
             } else {
                 return (false, "Unbekannte Taste: \(token)")
             }
+        }
+
+        // Special media / hardware keys (volume, brightness, playback …)
+        if let mediaKey {
+            return sendMediaKey(mediaKey, flags: flags)
         }
 
         guard let code = keyCode else {
@@ -61,7 +72,53 @@ enum KeystrokeSimulator {
         return (true, "Tastendruck gesendet")
     }
 
+    /// Posts a special media/hardware key (volume, brightness, playback, …) as
+    /// an NX system-defined event, the way the keys above the function row work.
+    private static func sendMediaKey(_ key: Int32, flags: CGEventFlags) -> (success: Bool, message: String) {
+        func post(keyDown: Bool) -> Bool {
+            let state = keyDown ? 0xA : 0xB           // NX key down / up state
+            let data1 = (Int(key) << 16) | (state << 8)
+            guard let event = NSEvent.otherEvent(
+                with: .systemDefined,
+                location: .zero,
+                modifierFlags: [],
+                timestamp: 0,
+                windowNumber: 0,
+                context: nil,
+                subtype: 8,                            // NX_SUBTYPE_AUX_CONTROL_BUTTONS
+                data1: data1,
+                data2: -1
+            ), let cgEvent = event.cgEvent else { return false }
+            cgEvent.flags = flags
+            cgEvent.post(tap: .cghidEventTap)
+            return true
+        }
+        guard post(keyDown: true), post(keyDown: false) else {
+            return (false, "Medientaste konnte nicht gesendet werden")
+        }
+        return (true, "Medientaste gesendet")
+    }
+
     // MARK: - Tables
+
+    /// Special keys above the function row, delivered as NX system events.
+    /// Values are the NX_KEYTYPE_* constants from IOKit's ev_keymap.h.
+    private static let mediaKeys: [String: Int32] = [
+        "volumeup": 0, "volup": 0, "lauter": 0,
+        "volumedown": 1, "voldown": 1, "leiser": 1,
+        "mute": 7, "stumm": 7,
+        "brightnessup": 2, "brightup": 2, "heller": 2,
+        "brightnessdown": 3, "brightdown": 3, "dunkler": 3,
+        "play": 16, "playpause": 16, "pause": 16,
+        "next": 17, "nexttrack": 17, "weiter": 17,
+        "previous": 18, "prev": 18, "prevtrack": 18, "zurueck": 18,
+        "fastforward": 19, "forward": 19,
+        "rewind": 20,
+        "keyboardbrightnessup": 21, "kbbrightup": 21,
+        "keyboardbrightnessdown": 22, "kbbrightdown": 22,
+        "keyboardbrightnesstoggle": 23, "kbbrighttoggle": 23,
+        "eject": 14
+    ]
 
     private static let modifiers: [String: CGEventFlags] = [
         "cmd": .maskCommand, "command": .maskCommand, "⌘": .maskCommand,

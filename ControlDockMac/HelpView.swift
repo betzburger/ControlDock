@@ -161,6 +161,17 @@ private struct HelpContent: View {
                 HelpText("Modifier: cmd, shift, alt/option, ctrl, fn. Tasten: Buchstaben, Zahlen, Pfeile (left/right/up/down), f1–f12, space, return, esc, tab, delete u. a.")
             }
 
+            HelpActionBlock(icon: "slider.horizontal.3", title: "Medien- & Hardware-Tasten",
+                            text: "Die Sondertasten oberhalb der Funktionstasten (Lautstärke, Helligkeit, Wiedergabe, Tastaturbeleuchtung) lassen sich über denselben Aktionstyp „Tastendruck“ ansprechen – einfach den Namen eintragen.") {
+                HelpCode([
+                    "volumeup   volumedown   mute",
+                    "brightnessup   brightnessdown",
+                    "play   next   previous",
+                    "keyboardbrightnessup   keyboardbrightnessdown   eject"
+                ])
+                HelpText("Deutsche Kürzel funktionieren ebenfalls: **lauter**, **leiser**, **stumm**, **heller**, **dunkler**, **weiter**, **zurueck**.")
+            }
+
             HelpActionBlock(icon: "link", title: "URL öffnen",
                             text: "Öffnet eine Adresse im Standardbrowser oder einen Deep-Link. Fehlt das Schema, wird https:// ergänzt.") {
                 HelpCode(["https://apple.com", "mailto:team@example.com", "raycast://confetti"])
