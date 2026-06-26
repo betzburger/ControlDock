@@ -15,7 +15,7 @@ import UIKit
 
 /// Owns a single NWConnection and its frame parsing on a background queue,
 /// forwarding decoded events and messages to the main actor via callbacks.
-nonisolated final class ConnectionSession {
+nonisolated final class ConnectionSession: @unchecked Sendable {
     enum Event: Sendable {
         case ready
         case failed(String)
@@ -137,13 +137,14 @@ final class DeckClient {
         let descriptor = NWBrowser.Descriptor.bonjour(type: ControlDockService.type, domain: nil)
         let browser = NWBrowser(for: descriptor, using: params)
         browser.browseResultsChangedHandler = { [weak self] results, _ in
+            guard let self else { return }
             let mapped = results.compactMap { result -> DiscoveredServer? in
                 if case let .service(name, _, _, _) = result.endpoint {
                     return DiscoveredServer(id: name, name: name, endpoint: result.endpoint)
                 }
                 return nil
             }
-            Task { @MainActor in self?.servers = mapped.sorted { $0.name < $1.name } }
+            Task { @MainActor in self.servers = mapped.sorted { $0.name < $1.name } }
         }
         browser.start(queue: .global())
         self.browser = browser
@@ -159,10 +160,12 @@ final class DeckClient {
 
         let session = ConnectionSession(endpoint: server.endpoint)
         session.onEvent = { [weak self] event in
-            Task { @MainActor in self?.handle(event) }
+            guard let self else { return }
+            Task { @MainActor in self.handle(event) }
         }
         session.onMessage = { [weak self] message in
-            Task { @MainActor in self?.handle(message) }
+            guard let self else { return }
+            Task { @MainActor in self.handle(message) }
         }
         session.start()
         self.session = session

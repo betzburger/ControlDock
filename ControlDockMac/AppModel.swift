@@ -73,16 +73,19 @@ final class AppModel {
 
     private func configureServer() {
         server.onStatusChange = { [weak self] running, name in
+            guard let self else { return }
             Task { @MainActor in
-                self?.serverRunning = running
-                self?.serviceName = name
+                self.serverRunning = running
+                self.serviceName = name
             }
         }
         server.onClientsChange = { [weak self] infos in
-            Task { @MainActor in self?.clients = infos }
+            guard let self else { return }
+            Task { @MainActor in self.clients = infos }
         }
         server.onActivity = { [weak self] message in
-            Task { @MainActor in self?.log(message) }
+            guard let self else { return }
+            Task { @MainActor in self.log(message) }
         }
         server.updateConfig(layout: layout, requirePIN: requirePIN, pin: pin)
         let name = Host.current().localizedName ?? "Mac"

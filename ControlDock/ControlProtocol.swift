@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: - Service discovery
 
-enum ControlDockService {
+nonisolated enum ControlDockService {
     /// Bonjour service type advertised by the Mac and browsed for by iOS.
     static let type = "_controldock._tcp"
     /// Bonjour domain (local network).
@@ -22,7 +22,7 @@ enum ControlDockService {
 // MARK: - Action model
 
 /// The kinds of action the Mac can perform when a button is pressed.
-enum ActionType: String, Codable, CaseIterable, Hashable, Sendable {
+nonisolated enum ActionType: String, Codable, CaseIterable, Hashable, Sendable {
     case launchApp      // payload = app name, bundle id, or full path
     case shellScript    // payload = shell command / script source
     case keystroke      // payload = key combo, e.g. "cmd+shift+4"
@@ -58,7 +58,7 @@ enum ActionType: String, Codable, CaseIterable, Hashable, Sendable {
 }
 
 /// A single configurable button on the deck.
-struct DeckButton: Codable, Identifiable, Hashable, Sendable {
+nonisolated struct DeckButton: Codable, Identifiable, Hashable, Sendable {
     var id: UUID
     var title: String
     /// SF Symbol name used as the icon.
@@ -85,7 +85,7 @@ struct DeckButton: Codable, Identifiable, Hashable, Sendable {
 }
 
 /// The full deck definition that the Mac sends to connected clients.
-struct DeckLayout: Codable, Hashable, Sendable {
+nonisolated struct DeckLayout: Codable, Hashable, Sendable {
     var deckName: String
     var buttons: [DeckButton]
 
@@ -98,14 +98,14 @@ struct DeckLayout: Codable, Hashable, Sendable {
 // MARK: - Wire messages
 
 /// Messages sent from the iOS client to the Mac server.
-enum ClientMessage: Codable, Sendable {
+nonisolated enum ClientMessage: Codable, Sendable {
     case hello(deviceName: String, pin: String, protocolVersion: Int)
     case requestLayout
     case press(buttonID: UUID)
 }
 
 /// Messages sent from the Mac server to the iOS client.
-enum ServerMessage: Codable, Sendable {
+nonisolated enum ServerMessage: Codable, Sendable {
     case helloAck(accepted: Bool, reason: String)
     case layout(DeckLayout)
     case actionResult(buttonID: UUID, success: Bool, message: String)
@@ -115,7 +115,7 @@ enum ServerMessage: Codable, Sendable {
 
 /// Length-prefixed JSON framing: a 4-byte big-endian UInt32 length header
 /// followed by that many bytes of JSON payload.
-enum MessageCodec {
+nonisolated enum MessageCodec {
     static func encode<T: Encodable>(_ value: T) throws -> Data {
         let payload = try JSONEncoder().encode(value)
         var header = UInt32(payload.count).bigEndian
@@ -131,7 +131,7 @@ enum MessageCodec {
 
 /// Accumulates incoming bytes and yields complete frame payloads as they
 /// arrive. Not thread-safe; confine to a single queue.
-struct FrameBuffer {
+nonisolated struct FrameBuffer {
     private var buffer = Data()
 
     mutating func append(_ data: Data) {

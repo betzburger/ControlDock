@@ -10,7 +10,7 @@
 import Foundation
 import Network
 
-nonisolated final class DeckServer {
+nonisolated final class DeckServer: @unchecked Sendable {
 
     struct ClientInfo: Identifiable, Sendable, Hashable {
         let id: UUID
@@ -199,7 +199,7 @@ nonisolated final class DeckServer {
 
 // MARK: - Per-client connection state
 
-private final class ClientConnection {
+private nonisolated final class ClientConnection: @unchecked Sendable {
     let id = UUID()
     let connection: NWConnection
     var frame = FrameBuffer()
