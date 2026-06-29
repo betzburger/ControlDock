@@ -12,6 +12,27 @@ local network. Think of it as a configurable, software-only stream deck.
 
 ---
 
+## Screenshots
+
+<div align="center">
+
+<table>
+  <tr>
+    <td align="center" valign="top" width="58%">
+      <img src="docs/screenshots/mac-server.png" alt="ControlDockMac — deck editor and server status on macOS" width="100%"><br>
+      <em>macOS — the deck editor, server status and connected devices</em>
+    </td>
+    <td align="center" valign="top" width="42%">
+      <img src="docs/screenshots/ios-client.png" alt="ControlDock — button grid on iPhone" width="100%"><br>
+      <em>iOS — the button grid, connected to the Mac</em>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+---
+
 ## Overview
 
 ControlDock is two native SwiftUI apps that talk to each other over your local
